@@ -5,6 +5,7 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 | Skill | 一句话说明 | 仓库 |
 |---|---|---|
 | **bilibili-subtitle-fetch** | 把 B 站视频的字幕抓取为 `.srt` 文件，多分P 视频与合集（ugc_season）都能处理 | [zhmge/skill-bilibili-subtitle-fetch](https://github.com/zhmge/skill-bilibili-subtitle-fetch) |
+| **srt-course-outline** | 把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架，每个标题带精准空降时间链接 | [zhmge/skill-srt-course-outline](https://github.com/zhmge/skill-srt-course-outline) |
 
 更多 skill 陆续整理中。
 
@@ -14,6 +15,7 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 
 ```bash
 git clone https://github.com/zhmge/skill-bilibili-subtitle-fetch.git
+git clone https://github.com/zhmge/skill-srt-course-outline.git
 ```
 
 整个目录放入 agent skills 目录即可，`SKILL.md` 是入口。
@@ -75,9 +77,50 @@ BILI_SESSDATA="<值>" node scripts/fetch_subtitles.js "<URL>" --out "<目录>" -
 已知限制：只在 B 站确实有字幕时有效；AI 字幕（`ai-zh`）由音频自动转写，**含识别错误**，
 不要当逐字稿引用；串行 + 3 秒间隔是刻意设计，用于避开风控，调快会导致限流。
 
+**搭配使用**：抓到的 `.srt` 可交给 [srt-course-outline](#srt-course-outline) 整理为课程大纲。
+
 ---
 
-## 为什么不用 submodule
+## srt-course-outline
+
+把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架 —— 每个标题带 B 站精准空降时间链接。
+
+- **仓库**：<https://github.com/zhmge/skill-srt-course-outline>
+- **类型**：Agent skill，需配合飞书连接器使用
+- **依赖**：Python 3（`parse_srt.py` 零第三方依赖）；写入文档依赖飞书连接器提供的 `lark-doc` skill
+
+### 用法
+
+```bash
+python3 scripts/parse_srt.py "<字幕1.srt>" ["<字幕2.srt>" ...]
+```
+
+先把 `.srt` 解析为结构化 JSON（序号、开始/结束秒、原始时间戳、文本），再由 agent 按 `SKILL.md`
+的工作流概括 h1 课程主题、切分 h2／h3、填充内容与时间链接，最终追加到目标飞书文档末尾。
+
+一次可传入多个 `.srt`，各自生成一个框架块，按顺序依次追加。
+
+### 产物
+
+目标文档末尾追加的大纲框架：h1 课程主题 → h2 小节（必要时 h3 细分）。
+
+- 每个标题标注 B 站精准空降时间链接，显示 `HH:MM:SS`，点击秒级跳转
+- 标题下填充导学概括与简单知识点：要点用 `- ` 短语，完整句作为要点下方的顶格段落
+- 只有一层要点，不使用嵌套子列表；需要看视频理解的部分留白
+
+### 前置条件
+
+**单独 clone 本仓库无法端到端运行。** 写入飞书文档依赖飞书连接器提供的 `lark-doc` skill，
+且需要对目标文档有编辑权限。缺少该连接器时，`parse_srt.py` 仍可独立把 `.srt` 解析为 JSON。
+
+### 搭配使用
+
+字幕来源由 [bilibili-subtitle-fetch](#bilibili-subtitle-fetch) 提供 —— 先用它把 B 站视频或
+合集的字幕抓成 `.srt`，再交给本 skill 整理成大纲。
+
+---
+
+## 不使用 submodule 的原因
 
 本仓库**刻意不**通过 git submodule 串联各个 skill。submodule 会带来“一键拉取全部”的效果，
 但代价是：clone 需要额外加 `--recurse-submodules`，在 GitHub 网页上点进子目录只能看到一个
