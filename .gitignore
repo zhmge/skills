@@ -9,11 +9,16 @@
 
 /bilibili-subtitle-fetch/
 /epub-indent-fix/
+/excel-table-export/
 /find-skills__skillhub/
 /skill-creator-generic/
 /skill-github-publish/
 /srt-course-outline/
 /subtitle-to-study-notes/
+/web-to-epub/
+
+# 工作区记忆：项目自身数据，不随索引公开
+/.workbuddy/
 
 # 归档压缩包
 *.zip
