@@ -1,0 +1,4 @@
+# 统一行尾：仓库内容一律 LF
+* text=auto eol=lf
+
+*.md text eol=lf

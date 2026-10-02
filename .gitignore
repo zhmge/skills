@@ -1,0 +1,25 @@
+# ── 索引仓库：只收录索引文档，不收录任何 skill 实体 ──
+#
+# 每个 skill 都是独立仓库（目录内自带 .git）。这里逐一忽略它们，
+# 否则 git 会把子目录当成 embedded repository，生成一个空的 gitlink
+# 指针 —— 别人 clone 本仓库后只会看到一个空文件夹。
+#
+# 本仓库刻意不使用 git submodule：它的定位是“索引”，不是“一键拉取全部”。
+# 想取某个 skill，请直接 clone 对应的独立仓库（见 README 索引表）。
+
+/bilibili-subtitle-fetch/
+/epub-indent-fix/
+/find-skills__skillhub/
+/skill-creator-generic/
+/srt-course-outline/
+/subtitle-to-study-notes/
+
+# 归档压缩包
+*.zip
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
