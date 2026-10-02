@@ -4,8 +4,8 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 
 | Skill | 一句话说明 | 仓库 |
 |---|---|---|
-| **bilibili-subtitle-fetch** | 把 B 站视频的字幕抓取为 `.srt` 文件，多分P 视频与合集（ugc_season）都能处理 | [zhmge/skill-bilibili-subtitle-fetch](https://github.com/zhmge/skill-bilibili-subtitle-fetch) |
-| **srt-course-outline** | 把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架，每个标题带精准空降时间链接 | [zhmge/skill-srt-course-outline](https://github.com/zhmge/skill-srt-course-outline) |
+| **bilibili-subtitle-fetch** | 把 B 站视频的字幕抓取为 `.srt` 文件，多分P 视频与合集（ugc_season）都能处理；每份 `.srt` 首行带该集来源链接 | [zhmge/skill-bilibili-subtitle-fetch](https://github.com/zhmge/skill-bilibili-subtitle-fetch) |
+| **srt-course-outline** | 把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架，每个标题带精准空降时间链接（基址取自 `.srt` 首行） | [zhmge/skill-srt-course-outline](https://github.com/zhmge/skill-srt-course-outline) |
 | **web-to-epub** | 把网页文章或网页书直接转换为内容保真的 EPUB 3 电子书 | [zhmge/skill-web-to-epub](https://github.com/zhmge/skill-web-to-epub) |
 
 更多 skill 陆续整理中。
@@ -74,6 +74,7 @@ BILI_SESSDATA="<值>" node scripts/fetch_subtitles.js "<URL>" --out "<目录>" -
 ### 输出与限制
 
 产物：`.srt` 文件（合集按章节建子目录）、`_index.md` 索引表、`_manifest.json` 断点台账。
+每份 `.srt` 的第一行是该集/该分P 的来源链接，第二行是空行，之后才是字幕块。
 重跑同一条命令会跳过已完成的、只补失败的。
 
 已知限制：只在 B 站确实有字幕时有效；AI 字幕（`ai-zh`）由音频自动转写，**含识别错误**，
@@ -97,7 +98,7 @@ BILI_SESSDATA="<值>" node scripts/fetch_subtitles.js "<URL>" --out "<目录>" -
 python3 scripts/parse_srt.py "<字幕1.srt>" ["<字幕2.srt>" ...]
 ```
 
-先把 `.srt` 解析为结构化 JSON（序号、开始/结束秒、原始时间戳、文本），再由 agent 按 `SKILL.md`
+先把 `.srt` 解析为结构化 JSON（来源链接、BV 号、字幕块列表），再由 agent 按 `SKILL.md`
 的工作流概括 h1 课程主题、切分 h2／h3、填充内容与时间链接，最终追加到目标飞书文档末尾。
 
 一次可传入多个 `.srt`，各自生成一个框架块，按顺序依次追加。
@@ -118,7 +119,7 @@ python3 scripts/parse_srt.py "<字幕1.srt>" ["<字幕2.srt>" ...]
 ### 搭配使用
 
 字幕来源由 [bilibili-subtitle-fetch](#bilibili-subtitle-fetch) 提供 —— 先用它把 B 站视频或
-合集的字幕抓成 `.srt`，再交给本 skill 整理成大纲。
+合集的字幕抓成 `.srt`（首行即该集来源链接），再交给本 skill 整理成大纲。
 
 ---
 
