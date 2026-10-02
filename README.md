@@ -6,7 +6,7 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 |---|---|---|
 | **bilibili-subtitle-fetch** | 把 B 站视频的字幕抓取为 `.srt` 文件，多分P 视频与合集（ugc_season）都能处理；每份 `.srt` 首行带该集来源链接 | [zhmge/skill-bilibili-subtitle-fetch](https://github.com/zhmge/skill-bilibili-subtitle-fetch) |
 | **srt-course-outline** | 把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架，每个标题带精准空降时间链接（基址取自 `.srt` 首行） | [zhmge/skill-srt-course-outline](https://github.com/zhmge/skill-srt-course-outline) |
-| **web-to-epub** | 把网页文章或网页书直接转换为内容保真的 EPUB 3 电子书 | [zhmge/skill-web-to-epub](https://github.com/zhmge/skill-web-to-epub) |
+| **web-to-epub** | 把网页文章或网页书直接转换为内容保真的 EPUB 3 电子书，附确定性打包与本地审计脚本 | [zhmge/skill-web-to-epub](https://github.com/zhmge/skill-web-to-epub) |
 
 更多 skill 陆续整理中。
 
@@ -128,18 +128,25 @@ python3 scripts/parse_srt.py "<字幕1.srt>" ["<字幕2.srt>" ...]
 把网页文章或网页书（一本一章一个页面的在线阅读站）直接转换为**内容保真**的 EPUB 3 电子书 —— 自适应排版、语义化目录、内嵌离线资源、内部链接校验。
 
 - **仓库**：<https://github.com/zhmge/skill-web-to-epub>
-- **类型**：Agent skill，纯工作流指令，不含脚本
-- **依赖**：无 —— 不需要第三方库，也不需要先把页面存成离线 HTML
+- **类型**：Agent skill，兼带两个可独立调用的 CLI 脚本（`scripts/`）
+- **依赖**：Python 3.10 及以上，仅标准库 —— 不需要第三方库，也不需要先把页面存成离线 HTML
 
 ### 用法
 
-把源页面链接与目标范围交给 agent，agent 按 `SKILL.md` 的工作流执行：检查源页面并确定范围 → 生成 XHTML 内容文档与共享样式表 → 生成 `content.opf`、`nav.xhtml`、`container.xml` → 结构与内容保真核对 → 交付。
+把源页面链接与目标范围交给 agent，agent 按 `SKILL.md` 的工作流执行：确认影响结果的取舍 → 建立规范化源目录 → 打包 → 审计 → 交付。
+
+源目录已按约定准备好时，两个脚本也可单独调用：
+
+```bash
+python scripts/epub_package.py SOURCE_DIR OUTPUT.epub [--no-ncx]
+python scripts/epub_audit.py OUTPUT.epub [--source-dir SOURCE_DIR] [--report EPUB_AUDIT.txt] [--json]
+```
 
 安装为 agent skill 时，整个目录放入 skills 目录即可；`SKILL.md` 是入口。
 
 ### 产物
 
-一个 EPUB 3 文件，外加一份核对报告：对标题、段落、代码块、图片、链接、列表与注释做来源与成书的计数比对，并逐个校验内部导航项、注释引用与回跳目标是否存在。
+一个 EPUB 3 文件（`mimetype` 恒为 ZIP 首条且不压缩），外加一份审计报告：包结构与 ZIP 条目、manifest 与 spine、XML 合法性、内部文件与片段锚点、重复 ID、离线资源依赖、CSS 引用、注释引用配对，以及源文件与成书的逐字节比对计数。审计脚本发现错误时退出码为 1，可直接用于流水线判定。报告区分「EPUBCheck 校验」与「本地结构与内容核对」两种口径。
 
 ### 开工前会先确认的环节
 
@@ -148,6 +155,7 @@ python3 scripts/parse_srt.py "<字幕1.srt>" ["<字幕2.srt>" ...]
 ### 已知限制
 
 - 可重排 EPUB 无法保证与网页**像素级一致**；需要固定尺寸时应在开工前说明
+- 本地审计不等于 EPUBCheck 通过：结构项（`mimetype` 顺序与压缩方式、ZIP 条目安全）由审计覆盖，规范完整性与阅读系统兼容性仍需官方 EPUBCheck
 - 注释仅以视觉坐标或空锚点定位时，归属需人工确认后再落笔
 - 未执行 EPUBCheck 时，报告会明确标注口径，不声称成书通过了结构认证
 
