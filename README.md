@@ -8,7 +8,7 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 | **srt-course-outline** | 把 B 站课程字幕（`.srt`）整理为飞书文档中的课程大纲框架，每个标题带精准空降时间链接（基址取自 `.srt` 首行） | [zhmge/skill-srt-course-outline](https://github.com/zhmge/skill-srt-course-outline) |
 | **web-to-epub** | 把网页文章或网页书直接转换为内容保真的 EPUB 3 电子书，附确定性打包与本地审计脚本 | [zhmge/skill-web-to-epub](https://github.com/zhmge/skill-web-to-epub) |
 | **excel-table-export** | 把 Unity 项目的 Excel 配置表安全导出为运行时 JSON：预校验 → Unity 导出 → 产物核对 → 提交四件套，附只读预校验脚本 | [zhmge/skill-excel-table-export](https://github.com/zhmge/skill-excel-table-export) |
-| **video-hardsub-to-srt** | 从视频画面 OCR 提取**硬字幕**为 `.srt`（首行=来源链接）；逐帧检测 + 段内几何变化触发识别，PaddleOCR transformers 后端 GPU 路线约 24ms/帧 | [zhmge/skill-video-hardsub-to-srt](https://github.com/zhmge/skill-video-hardsub-to-srt) |
+| **video-hardsub-to-srt** | 从视频画面 OCR 提取**硬字幕**为 `.srt`（首行=来源链接）；逐帧检测 + 段内几何变化触发识别，PaddleOCR transformers 后端 GPU 路线约 24ms/帧。**已知边界**：不判别字幕区内的 UI／水印（详见其 `references/known-issues.md`） | [zhmge/skill-video-hardsub-to-srt](https://github.com/zhmge/skill-video-hardsub-to-srt) |
 
 更多 skill 陆续整理中。
 
