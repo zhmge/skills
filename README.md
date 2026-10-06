@@ -9,6 +9,8 @@ AI agent skill 索引 —— 每个 skill 独立成库，本仓库只做汇总�
 | **web-to-epub** | 把网页文章或网页书直接转换为内容保真的 EPUB 3 电子书，附确定性打包与本地审计脚本 | [zhmge/skill-web-to-epub](https://github.com/zhmge/skill-web-to-epub) |
 | **excel-table-export** | 把 Unity 项目的 Excel 配置表安全导出为运行时 JSON：预校验 → Unity 导出 → 产物核对 → 提交四件套，附只读预校验脚本 | [zhmge/skill-excel-table-export](https://github.com/zhmge/skill-excel-table-export) |
 | **video-hardsub-to-srt** | 从视频画面 OCR 提取**硬字幕**为 `.srt`（首行=来源链接）；逐帧检测 + 段内几何变化触发识别，PaddleOCR transformers 后端 GPU 路线约 24ms/帧。**已知边界**：不判别字幕区内的 UI／水印（详见其 `references/known-issues.md`） | [zhmge/skill-video-hardsub-to-srt](https://github.com/zhmge/skill-video-hardsub-to-srt) |
+| **video-audio-to-srt** | 从音频/视频的音轨生成本地 ASR 转写为带时间轴 `.srt`；faster-whisper large-v3 在本机 GPU 推理（12 分钟音频约 2 分钟），`fixes.json` 逐字断言防索引错位，附批量系列跑法 | [zhmge/skill-video-audio-to-srt](https://github.com/zhmge/skill-video-audio-to-srt) |
+| **bilibili-slide-capture** | 从 PPT 式讲课录屏里提取**完整幻灯片**帧，按笔记章节时间戳视觉选帧后插入飞书文档对应 h2 下；含高清下载、pHash 稳定帧聚类、缩略图墙与飞书回填脚本 | [zhmge/skill-bilibili-slide-capture](https://github.com/zhmge/skill-bilibili-slide-capture) |
 
 更多 skill 陆续整理中。
 
@@ -22,6 +24,8 @@ git clone https://github.com/zhmge/skill-srt-course-outline.git
 git clone https://github.com/zhmge/skill-web-to-epub.git
 git clone https://github.com/zhmge/skill-excel-table-export.git
 git clone https://github.com/zhmge/skill-video-hardsub-to-srt.git
+git clone https://github.com/zhmge/skill-video-audio-to-srt.git
+git clone https://github.com/zhmge/skill-bilibili-slide-capture.git
 ```
 
 整个目录放入 agent skills 目录即可，`SKILL.md` 是入口。

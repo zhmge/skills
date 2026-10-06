@@ -7,6 +7,7 @@
 # 本仓库刻意不使用 git submodule：它的定位是“索引”，不是“一键拉取全部”。
 # 想取某个 skill，请直接 clone 对应的独立仓库（见 README 索引表）。
 
+/bilibili-slide-capture/
 /bilibili-subtitle-fetch/
 /epub-indent-fix/
 /excel-table-export/
@@ -15,6 +16,7 @@
 /skill-github-publish/
 /srt-course-outline/
 /subtitle-to-study-notes/
+/video-audio-to-srt/
 /video-hardsub-to-srt/
 /web-to-epub/
 
